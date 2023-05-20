@@ -20,7 +20,6 @@ class SecurityController extends AbstractController
     {
         $user = $this->getUser();
         if ($user instanceof User) {
-            dump("hello");
             return $this->redirectToRoute('dashboard');
         }
         $error = $authenticationUtils->getLastAuthenticationError();
