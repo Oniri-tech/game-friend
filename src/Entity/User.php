@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +28,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\ManyToMany(targetEntity: Table::class, mappedBy: 'players')]
+    private Collection $gameTables;
+
+    #[ORM\OneToMany(mappedBy: 'master', targetEntity: Table::class)]
+    private Collection $masterTables;
+
+    public function __construct()
+    {
+        $this->gameTables = new ArrayCollection();
+        $this->masterTables = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,5 +121,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Table>
+     */
+    public function getGameTables(): Collection
+    {
+        return $this->gameTables;
+    }
+
+    public function addGameTable(Table $gameTable): self
+    {
+        if (!$this->gameTables->contains($gameTable)) {
+            $this->gameTables->add($gameTable);
+            $gameTable->addPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameTable(Table $gameTable): self
+    {
+        if ($this->gameTables->removeElement($gameTable)) {
+            $gameTable->removePlayer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Table>
+     */
+    public function getMasterTables(): Collection
+    {
+        return $this->masterTables;
+    }
+
+    public function addMasterTable(Table $masterTable): self
+    {
+        if (!$this->masterTables->contains($masterTable)) {
+            $this->masterTables->add($masterTable);
+            $masterTable->setMaster($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMasterTable(Table $masterTable): self
+    {
+        if ($this->masterTables->removeElement($masterTable)) {
+            // set the owning side to null (unless already changed)
+            if ($masterTable->getMaster() === $this) {
+                $masterTable->setMaster(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -4,4 +4,16 @@
 
 {% block container %}
     <h1>Hello {{user.username}}</h1>
+    <h2>Tes tables de MJ</h2>
+    {% for masterTable in masterTables %}
+        <ul>
+            <li>{{masterTable.name}}</li>
+        </ul>
+    {% endfor %}
+    <h2>Tes tables de Joueur</h2>
+    {% for table in tables %}
+        <ul>
+            <li>{{table.name}}</li>
+        </ul>
+    {% endfor %}
 {% endblock %}

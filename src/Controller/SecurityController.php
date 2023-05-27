@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('register', name:'app-register')]
+    #[Route('/register', name:'app-register')]
     public function register(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
         $newUser = new User();
