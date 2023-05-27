@@ -25,9 +25,13 @@ class Table
     #[ORM\ManyToOne(inversedBy: 'masterTables')]
     private ?User $master = null;
 
+    #[ORM\OneToMany(mappedBy: 'gameTable', targetEntity: Character::class, orphanRemoval: true)]
+    private Collection $characters;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->characters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,6 +83,36 @@ class Table
     public function setMaster(?User $master): self
     {
         $this->master = $master;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Character>
+     */
+    public function getCharacters(): Collection
+    {
+        return $this->characters;
+    }
+
+    public function addCharacter(Character $character): self
+    {
+        if (!$this->characters->contains($character)) {
+            $this->characters->add($character);
+            $character->setGameTable($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCharacter(Character $character): self
+    {
+        if ($this->characters->removeElement($character)) {
+            // set the owning side to null (unless already changed)
+            if ($character->getGameTable() === $this) {
+                $character->setGameTable(null);
+            }
+        }
 
         return $this;
     }

@@ -7,7 +7,7 @@
     <h2>Tes tables de MJ</h2>
     {% for masterTable in masterTables %}
         <ul>
-            <li>{{masterTable.name}}</li>
+            <li><a href="{{ path('open_table', {id: masterTable.id}) }}">{{masterTable.name}}</a></li>
         </ul>
     {% endfor %}
     <h2>Tes tables de Joueur</h2>

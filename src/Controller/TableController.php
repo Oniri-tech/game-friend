@@ -46,10 +46,16 @@ class TableController extends AbstractController
         ]);
     }
 
-    #[IsGranted(['ROLE-USER', 'master', 'player'])]
+    #[IsGranted('ROLE_USER')]
     #[Route(path: '/table/{id}', name: 'open_table')]
-    public function table($id, TableRepository $tableRepository): Response
+    public function table(Table $table): Response
     {
-        $table = $tableRepository->find($id);
+        $user = $this->getUser();
+        $this->denyAccessUnlessGranted('master', $table);
+        if ($user === $table->getMaster()) {
+            return $this->render('Table/table.master.twig', [
+                'user' => $user
+            ]);
+        }
     }
 }

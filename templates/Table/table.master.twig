@@ -1,0 +1,7 @@
+{% extends 'app.base.html.twig' %}
+
+{% block title %}Page MJ{% endblock %}
+
+{% block container %}
+    <h1>{{'table.master.title'|trans({'%name%': user.username})}}</h1>
+{% endblock %}
